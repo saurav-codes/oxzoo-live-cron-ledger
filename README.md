@@ -19,8 +19,8 @@ page shows each job's history and missed slots.
 ## ox features used
 
 - Zero-config start: `uv run gunicorn app:app` is detected from `app.py`
-  (worker count, access log, and no control socket under the read-only
-  HOME come from `gunicorn.conf.py`).
+  (worker count and access log come from `gunicorn.conf.py`; gunicorn's
+  control socket goes to the unit's own `XDG_RUNTIME_DIR`, ox 94c9cada).
 - `[cron]` with four jobs, `[build] migrate`, `[app] health`.
 - `postgres = {}`: the shared Postgres, which provides `DATABASE_URL`.
 
