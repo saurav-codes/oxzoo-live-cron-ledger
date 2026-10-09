@@ -1,6 +1,10 @@
 # cron-ledger
 
-> **Role in the zoo:** project `cron-ledger` of [oxzoo-live](https://github.com/saurav-codes/oxzoo-live-control/blob/main/zoo/README.md#projects), deployed with ox on server s2 at https://cron-ledger.s2.zoo.sorv.dev. The contract it follows is [DESIGN.md](https://github.com/saurav-codes/oxzoo-live-control/blob/main/zoo/DESIGN.md).
+Deployed with [ox](https://deploywithox.com): deploy a repo to your own server with one command, no Docker. [Docs](https://deploywithox.com/docs) · [Guide for this stack](https://deploywithox.com/docs/guides/flask)
+
+**Live demo:** https://cron-ledger.s2.zoo.sorv.dev
+
+> **Role in the zoo:** project `cron-ledger` of [oxzoo-live](https://github.com/saurav-codes/oxzoo-live-control/blob/main/zoo/README.md#projects), deployed with [ox](https://deploywithox.com) on server s2 at https://cron-ledger.s2.zoo.sorv.dev. The contract it follows is [DESIGN.md](https://github.com/saurav-codes/oxzoo-live-control/blob/main/zoo/DESIGN.md).
 
 Flask + gunicorn over Postgres. Four ox cron jobs write a run ledger, and a
 page shows each job's history and missed slots.
