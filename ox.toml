@@ -1,0 +1,16 @@
+[app]
+health = "/_zoo/health"
+
+[build]
+migrate = "uv run python migrate.py"
+
+# Each job records one row per scheduled slot; the slot math in ledger.py
+# assumes these periods.
+[cron]
+tick   = { schedule = "* * * * *", run = "uv run python jobs.py tick" }
+rollup = { schedule = "*/5 * * * *", run = "uv run python jobs.py rollup" }
+prune  = { schedule = "@hourly", run = "uv run python jobs.py prune" }
+report = { schedule = "@daily", run = "uv run python jobs.py report" }
+
+[services]
+postgres = {}

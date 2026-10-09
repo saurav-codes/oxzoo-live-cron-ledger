@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="30">
+<title>cron-ledger</title>
+<style>
+  body { font: 14px/1.4 system-ui, sans-serif; color: #333; margin: 2rem auto; max-width: 980px; padding: 0 1rem; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 1.5rem; }
+  th, td { text-align: left; padding: 4px 8px; border-bottom: 1px solid #eee; }
+  .ok { color: #1a7f37; } .failed, .missed { color: #c62828; } .subtle { color: #777; }
+  section { border: 1px solid #e5e5e5; border-radius: 14px; padding: 8px 16px; margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<h1>cron-ledger</h1>
+<p class="subtle">Four ox cron jobs, each run recorded once per scheduled slot (UTC). Page time {{ now.strftime("%Y-%m-%d %H:%M:%S") }}Z, refreshes every 30 s.</p>
+
+<table>
+  <tr><th>Job</th><th>Every</th><th>Last run</th><th>Last status</th><th>Missed slots (24 h)</th></tr>
+  {% for j in jobs %}
+  <tr>
+    <td>{{ j.job }}</td><td>{{ j.every }}</td>
+    <td>{% if j.last_age_s is none %}never{% else %}{{ j.last_age_s }} s ago{% endif %}</td>
+    <td class="{{ j.last_status }}">{{ j.last_status }}</td>
+    <td class="{{ 'missed' if j.missed else '' }}">{{ j.missed }}{% if j.missed_recent %} <span class="subtle">(latest {{ j.missed_recent | join(", ") }})</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% for j in jobs %}
+<section>
+  <h3>{{ j.job }}: last {{ j.runs | length }} runs</h3>
+  <table>
+    <tr><th>Slot</th><th>Status</th><th>Rows</th><th>Took</th><th>Error</th></tr>
+    {% for r in j.runs %}
+    <tr><td>{{ r.slot }}</td><td class="{{ r.status }}">{{ r.status }}</td><td>{{ r.rows }}</td>
+      <td>{% if r.ms is not none %}{{ r.ms }} ms{% endif %}</td><td>{{ r.error }}</td></tr>
+    {% else %}
+    <tr><td colspan="5" class="subtle">no runs yet</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endfor %}
+
+<h2>Hourly rollups</h2>
+<table>
+  <tr><th>Hour (UTC)</th><th>Ticks</th></tr>
+  {% for hour, ticks in rollups %}<tr><td>{{ hour.strftime("%Y-%m-%d %H:00") }}</td><td>{{ ticks }}</td></tr>{% endfor %}
+</table>
+
+<h2>Daily reports</h2>
+<table>
+  <tr><th>Day</th><th>Ticks</th><th>Runs ok</th><th>Runs failed</th></tr>
+  {% for day, ticks, ok, failed in reports %}<tr><td>{{ day }}</td><td>{{ ticks }}</td><td>{{ ok }}</td><td>{{ failed }}</td></tr>{% endfor %}
+</table>
+<p class="subtle">JSON: <a href="/api/runs">/api/runs</a>, <a href="/_zoo/probe">/_zoo/probe</a></p>
+</body>
+</html>
